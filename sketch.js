@@ -1,16 +1,17 @@
 let autoRotate = 0.0;
-
-
+let ColorMode = false;
 //defines a class to store RGB values
 class Color{
 	//make a random color
-	constructor(){
-		this.red = Math.random()*255;
-		this.green = Math.random()*255;
-		this.blue = Math.random()*255;
+	constructor(red, green, blue){
+		this.red = red;
+		this.green = green;
+		this.blue = blue;
 	}
 }
 
+let PaletteArray = [new Color(96,8,175),new Color(250,19,4),new Color(245,94,0), new Color(17,211,204),new Color(1,61,221), new Color(126,32,101), new Color(25,229,203) , new Color(241,80,251), new Color(224,0,170)];
+// REMOVED COLORS new Color(107,133,106),  , new Color(199,249,31) ,new Color(78,251,10) new Color(99,212,102), new Color(22,152,77),
 //defines a Graph class specificly a star
 class Star{
 	//set n the number of lines, x location, y location and rotation scale then make a color array
@@ -21,17 +22,24 @@ class Star{
 		this.xVel = xVel;
 		this.yVel = yVel;
 		this.rotateScale = r;
-		this.colorArray = [new Color()];
+		this.colorArray = [];
+		
 		let radius = this.x*this.x+this.y*this.y;
 		this.radius = radius;
 		//find smallest k here
 		this.k = 1;
-		
+		let startingIndex = Math.floor(Math.random*PaletteArray.length);
 		for(this.k = 1; this.n > Math.ceil((this.n+1.0)/this.k)*(this.k-1); this.k++);
-		
+		//comment out once pallet is done
+		//this.k = PaletteArray.length +1;
 		//if the color array doesn't contain enough colors fill more colors
-		while(this.colorArray.length < this.k){
-			this.colorArray.push(new Color());
+		for(let i = 0; i < this.k; i++){
+			if(ColorMode){
+				this.colorArray.push(new Color(Math.random()*255,Math.random()*255,Math.random()*255));
+			}
+			else{
+				this.colorArray.push(PaletteArray[i]);
+			}
 		}
 	}
 	//draw the graph
@@ -76,7 +84,6 @@ class Star{
 	
 	}
 }
-
 let graphArray = [new Star(Math.ceil(Math.random()*20)+10,0,0,.5)];
 let movement = false;
 let moveRate = .50;
@@ -112,9 +119,12 @@ function keyPressed()
 	}
 	else if(keyCode === ENTER)
 	{
-		saveCanvas(mycanvas,"DrawMachine"+year()+ "_" +month()+"_"+day()+"_"+hour()+"_"+minute(),"jpg");
+		saveCanvas(mycanvas,"DrawMachine"+year()+ "_" +month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second(),"jpg");
 	}
-	
+	else if(keyCode === SHIFT)
+	{
+		ColorMode = !ColorMode;
+	}		
 	
 }
 
